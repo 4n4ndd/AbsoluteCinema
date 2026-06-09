@@ -1,0 +1,161 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: black;
+  overflow-x: hidden;
+}
+
+.auth-page {
+  min-height: 100vh;
+  position: relative;
+  background: radial-gradient(circle at top, #3b0a6b, #000);
+}
+
+.auth-poster-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 20px;
+  padding: 60px 80px;
+  margin-top: 40px;
+
+  filter: blur(8px);
+  opacity: 0.45;
+
+  position: fixed;
+  inset: 0;
+
+  z-index: 1;
+}
+
+.auth-poster-grid img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.auth-poster-grid img:nth-child(odd) {
+  transform: translateY(20px);
+}
+
+.auth-poster-grid img:nth-child(even) {
+  transform: translateY(-20px);
+}
+
+.auth-poster-grid img:nth-child(n + 8):nth-child(-n + 14) {
+  transform: translateY(60px);
+}
+
+.auth-poster-grid img:nth-child(n + 15):nth-child(-n + 21) {
+  transform: translateY(100px);
+}
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 2;
+}
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 3;
+}
+
+.auth-box {
+  width: 380px;
+  padding: 40px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  text-align: center;
+  color: white;
+}
+
+.auth-box h1 {
+  margin-bottom: 10px;
+  letter-spacing: 3px;
+}
+
+.auth-box p {
+  color: #d1d5db;
+}
+
+.auth-box input {
+  width: 100%;
+  box-sizing: border-box;
+
+  margin: 12px 0;
+  padding: 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+
+  outline: none;
+}
+
+.auth-box input::placeholder {
+  color: #cbd5e1;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(45deg, #7c3aed, #a855f7);
+
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.auth-btn:hover {
+  transform: scale(1.02);
+}
+
+.switch {
+  margin-top: 20px;
+  cursor: pointer;
+  color: #c084fc;
+}
+.auth-footer {
+  position: relative;
+  z-index: 3;
+
+  background: #0a0015;
+
+  padding: 40px 20px;
+
+  text-align: center;
+}
+
+.auth-footer h2 {
+  color: #a855f7;
+}
+
+.auth-footer p {
+  color: #aaa;
+}
+
+.auth-footer .copyright {
+  font-size: 0.8rem;
+  color: #777;
+}
