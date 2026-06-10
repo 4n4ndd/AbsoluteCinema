@@ -10,6 +10,8 @@ function Recommend() {
   const [movies, setMovies] = useState([]);
 
   const userId = localStorage.getItem("userId");
+  //const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   const posters = [
     "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
@@ -31,10 +33,9 @@ function Recommend() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!userId) {
+    if (!token) {
       alert("Please login first");
       navigate("/login");
-      return;
     }
 
     try {

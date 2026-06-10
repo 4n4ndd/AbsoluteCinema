@@ -32,6 +32,8 @@ function Login() {
     }
 
     try {
+      // const data = await res.text();
+      // console.log(data);
       const res = await fetch("http://localhost:8082/api/auth/login", {
         method: "POST",
         headers: {
@@ -49,11 +51,10 @@ function Login() {
         return;
       }
 
-      const user = await res.json();
+      const data = await res.json();
 
-      localStorage.setItem("userId", user.id);
-      localStorage.setItem("email", user.email);
-      localStorage.setItem("name", user.name);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
 
       alert("Login successful");
       navigate("/recommend");
