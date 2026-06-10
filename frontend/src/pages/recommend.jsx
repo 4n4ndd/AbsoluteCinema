@@ -1,9 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 import "../styles/index.css";
 
 function Recommend() {
+  const navigate = useNavigate();
+
   const [genre, setGenre] = useState("");
   const [movies, setMovies] = useState([]);
+
+  const userId = localStorage.getItem("userId");
 
   const posters = [
     "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
@@ -25,14 +31,23 @@ function Recommend() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!userId) {
+      alert("Please login first");
+      navigate("/login");
+      return;
+    }
+
     try {
       const response = await fetch(
-        `http://localhost:8082/api/recommendationHistory/recommend?userId=1&genre=${genre}`,
+        `http://localhost:8082/api/recommendationHistory/recommend?userId=${userId}&genre=${genre}`,
       );
 
-      const data = await response.json();
+      if (!response.ok) {
+        alert("Failed to fetch recommendations");
+        return;
+      }
 
-      console.log("Recommendations:", data);
+      const data = await response.json();
 
       if (data.success) {
         setMovies(data.recs);
@@ -47,7 +62,10 @@ function Recommend() {
 
   return (
     <div className="recommend-page">
-      {" "}
+      <div className="profile-circle" onClick={() => navigate("/profile")}>
+        <FaUser />
+      </div>
+
       <div className="recommend-poster-grid">
         {posters.map((id, index) => (
           <img
@@ -55,9 +73,11 @@ function Recommend() {
             src={`https://image.tmdb.org/t/p/w500${id}`}
             alt="movie"
           />
-        ))}{" "}
+        ))}
       </div>
+
       <div className="recommend-overlay"></div>
+
       <div className="main-container">
         <div className="hero">
           <h1>ABSOLUTE CINEMA</h1>
@@ -88,17 +108,38 @@ function Recommend() {
 
         {movies.length > 0 && (
           <div className="results">
-            <h2>Top Picks For You 🔥</h2>
+            <h2>TOP 5 RECOMMENDATIONS</h2>
 
-            <div className="movie-grid">
-              {movies.map((m, index) => (
-                <div className="movie-card" key={index}>
-                  <h3>{m.title}</h3>
-                  <p className="rating">⭐ {m.rating}</p>
-                  <p className="genre">{m.genre}</p>
-                </div>
-              ))}
-            </div>
+            {movies.length > 0 && (
+              <div className="results">
+                <h2>Top Picks For You 🔥</h2>
+
+                {movies.map((m, index) => (
+                  <div className="movie-card" key={index}>
+                    <div className="card-top">
+                      <div className="card-icon">🎬</div>
+                      <span className="card-badge">⭐ {m.rating}</span>
+                    </div>
+
+                    <h3>{m.title}</h3>
+
+                    <div className="card-tags">
+                      {m.genre.split("|").map((g, i) => (
+                        <span className="tag" key={i}>
+                          {g}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="card-divider"></div>
+
+                    <div className="card-bottom">
+                      <span className="rating">⭐ {m.rating}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

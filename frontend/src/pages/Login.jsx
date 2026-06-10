@@ -43,19 +43,26 @@ function Login() {
         }),
       });
 
-      const message = await res.text();
-
-      alert(message);
-
-      if (message === "Login successful") {
-        localStorage.setItem("email", email);
-        navigate("/recommend");
+      if (!res.ok) {
+        const error = await res.text();
+        alert(error);
+        return;
       }
+
+      const user = await res.json();
+
+      localStorage.setItem("userId", user.id);
+      localStorage.setItem("email", user.email);
+      localStorage.setItem("name", user.name);
+
+      alert("Login successful");
+      navigate("/recommend");
     } catch (error) {
       console.error(error);
       alert("Server error");
     }
   };
+
   return (
     <div className="auth-page">
       <div className="auth-poster-grid">
@@ -98,6 +105,7 @@ function Login() {
           </p>
         </div>
       </div>
+
       <footer className="footer">
         <div className="footer-content">
           <h2>ABSOLUTE CINEMA</h2>
