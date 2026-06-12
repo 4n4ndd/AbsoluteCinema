@@ -6,12 +6,34 @@ import "../styles/index.css";
 function Recommend() {
   const navigate = useNavigate();
 
-  const [genre, setGenre] = useState("");
+  const [selectedGenres, setSelectedGenres] = useState([]);
   const [movies, setMovies] = useState([]);
 
   const userId = localStorage.getItem("userId");
-  //const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
+
+  const genres = [
+    { name: "Action", emoji: "🔥" },
+    { name: "Comedy", emoji: "😂" },
+    { name: "Drama", emoji: "🎭" },
+    { name: "Romance", emoji: "❤️" },
+    { name: "Horror", emoji: "👻" },
+    { name: "Thriller", emoji: "🔪" },
+    { name: "Sci-Fi", emoji: "🚀" },
+    { name: "Adventure", emoji: "🗺️" },
+    { name: "Fantasy", emoji: "🧙" },
+    { name: "Crime", emoji: "🕵️" },
+    { name: "Mystery", emoji: "❓" },
+    { name: "Animation", emoji: "🎨" },
+    { name: "Family", emoji: "👨‍👩‍👧" },
+    { name: "War", emoji: "⚔️" },
+    { name: "History", emoji: "📜" },
+    { name: "Music", emoji: "🎵" },
+    { name: "Documentary", emoji: "🎥" },
+    { name: "Biography", emoji: "📖" },
+    { name: "Sport", emoji: "🏆" },
+    { name: "Western", emoji: "🤠" },
+  ];
 
   const posters = [
     "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
@@ -30,17 +52,42 @@ function Recommend() {
     "/bOGkgRGdhrBYJSLpXaxhXVstddV.jpg",
   ];
 
+  const toggleGenre = (genre) => {
+    if (selectedGenres.includes(genre)) {
+      setSelectedGenres(selectedGenres.filter((g) => g !== genre));
+    } else {
+      setSelectedGenres([...selectedGenres, genre]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!token) {
       alert("Please login first");
       navigate("/login");
+      return;
+    }
+
+    if (selectedGenres.length === 0) {
+      alert("Please select at least one genre");
+      return;
     }
 
     try {
       const response = await fetch(
-        `http://localhost:8082/api/recommendationHistory/recommend?userId=${userId}&genre=${genre}`,
+        "http://localhost:8082/api/recommendationHistory/recommend",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId: Number(userId),
+            genre: selectedGenres.join(" "),
+          }),
+        },
       );
 
       if (!response.ok) {
@@ -57,7 +104,7 @@ function Recommend() {
       }
     } catch (error) {
       console.error(error);
-      alert("Failed to fetch recommendations");
+      alert("Something went wrong");
     }
   };
 
@@ -87,60 +134,62 @@ function Recommend() {
 
         <div className="form-container">
           <form onSubmit={handleSubmit} className="form">
-            <select
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              required
-            >
-              <option value="">Select Genre</option>
-              <option value="Action">Action</option>
-              <option value="Comedy">Comedy</option>
-              <option value="Drama">Drama</option>
-              <option value="Romance">Romance</option>
-              <option value="Horror">Horror</option>
-              <option value="Thriller">Thriller</option>
-              <option value="Sci-Fi">Sci-Fi</option>
-              <option value="Adventure">Adventure</option>
-            </select>
+            <div className="genre-grid">
+              {genres.map((g, index) => (
+                <label
+                  key={index}
+                  className={`genre-pill ${
+                    selectedGenres.includes(g.name) ? "active" : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedGenres.includes(g.name)}
+                    onChange={() => toggleGenre(g.name)}
+                  />
 
-            <button type="submit">Get Recommendations</button>
+                  <span className="genre-content">
+                    <span className="genre-emoji">{g.emoji}</span>
+                    <span className="genre-name">{g.name}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+
+            <button type="submit" className="recommend-btn">
+              Get Recommendations 🎬
+            </button>
           </form>
         </div>
 
         {movies.length > 0 && (
           <div className="results">
-            <h2>TOP 5 RECOMMENDATIONS</h2>
+            <h2>Top Picks For You 🔥</h2>
 
-            {movies.length > 0 && (
-              <div className="results">
-                <h2>Top Picks For You 🔥</h2>
+            {movies.map((m, index) => (
+              <div className="movie-card" key={index}>
+                <div className="card-top">
+                  <div className="card-icon">🎬</div>
+                  <span className="card-badge">⭐ {m.rating}</span>
+                </div>
 
-                {movies.map((m, index) => (
-                  <div className="movie-card" key={index}>
-                    <div className="card-top">
-                      <div className="card-icon">🎬</div>
-                      <span className="card-badge">⭐ {m.rating}</span>
-                    </div>
+                <h3>{m.title}</h3>
 
-                    <h3>{m.title}</h3>
+                <div className="card-tags">
+                  {m.genre.split("|").map((g, i) => (
+                    <span className="tag" key={i}>
+                      {g}
+                    </span>
+                  ))}
+                </div>
 
-                    <div className="card-tags">
-                      {m.genre.split("|").map((g, i) => (
-                        <span className="tag" key={i}>
-                          {g}
-                        </span>
-                      ))}
-                    </div>
+                <div className="card-divider"></div>
 
-                    <div className="card-divider"></div>
-
-                    <div className="card-bottom">
-                      <span className="rating">⭐ {m.rating}</span>
-                    </div>
-                  </div>
-                ))}
+                <div className="card-bottom">
+                  <span className="rating">⭐ {m.rating}</span>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         )}
 

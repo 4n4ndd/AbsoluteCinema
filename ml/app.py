@@ -24,6 +24,7 @@ def home():
         "status": "running"
     })
 
+#@app.route("/recommend", methods=["POST"])
 @app.route("/recommend", methods=["POST"])
 def recommend():
     try:
@@ -46,11 +47,18 @@ def recommend():
 
         merged = pred_df.merge(movies, on="movieId")
 
+        # Multi-genre filtering
         if genre:
+            genre_list = genre.lower().split()
+
             filtered = merged[
-                merged["genres"]
-                .str.lower()
-                .str.contains(genre.lower(), na=False)
+                merged["genres"].apply(
+                    lambda movie_genres:
+                    all(
+                        g in movie_genres.lower()
+                        for g in genre_list
+                    )
+                )
             ]
         else:
             filtered = merged
