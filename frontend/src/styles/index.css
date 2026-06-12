@@ -300,7 +300,7 @@ body {
 }
 
 .profile-circle:hover {
-  background: #e50914;
+  background: purple;
   color: white;
   transform: scale(1.1);
 

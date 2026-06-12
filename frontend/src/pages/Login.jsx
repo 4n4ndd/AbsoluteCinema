@@ -32,8 +32,6 @@ function Login() {
     }
 
     try {
-      // const data = await res.text();
-      // console.log(data);
       const res = await fetch("http://localhost:8082/api/auth/login", {
         method: "POST",
         headers: {
@@ -100,6 +98,10 @@ function Login() {
           <button className="auth-btn" onClick={handleLogin}>
             Login
           </button>
+
+          <p className="switch" onClick={() => navigate("/forgot-password")}>
+            Forgot Password?
+          </p>
 
           <p className="switch" onClick={() => navigate("/signup")}>
             Don't have an account? Sign Up
